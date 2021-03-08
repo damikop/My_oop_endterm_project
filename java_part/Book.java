@@ -6,6 +6,7 @@ public class Book {
     private String author;
     private String category;
 
+    //constructor
     public Book() {
 
     }
@@ -23,6 +24,7 @@ public class Book {
         setCategory(category);
     }
 
+    //setters and getters for all filed of Book
     public int getISBN() {
         return ISBN;
     }
@@ -55,6 +57,7 @@ public class Book {
         this.category = category;
     }
 
+    //toString method for fields
     @Override
     public String toString() {
         return "Book{" +
