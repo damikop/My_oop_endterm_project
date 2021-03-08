@@ -6,103 +6,108 @@ import com.company.IBookRepository;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
-
+//dependency injection
 public class BookRepository implements IBookRepository{
-    private final IDB db2;
+    private final IDB dinoDB2;
 
-    public BookRepository(IDB db2) {
-        this.db2 = db2;
+    public BookRepository(IDB dinoDB2) {
+        this.dinoDB2 = dinoDB2;
     }
+    //using exception handling we selecting all bokks in our database
     @Override
     public List<Book> getAllBooks() {
-        Connection con2 = null;
+        //creating connection
+        Connection dinoCon2 = null;
         try {
-            con2 = db2.getConnection();
-            String sql = "SELECT ISBN,title,author,category FROM Book";
-            Statement st2 = con2.createStatement();
-
-            ResultSet rs2 = st2.executeQuery(sql);
+            dinoCon2 = dinoDB2.getConnection();
+            
+            String dinoSQL = "SELECT ISBN,title,author,category FROM Book";
+            Statement dinoST2 = dinoCon2.createStatement();
+//adding result set
+            ResultSet dinoRS2 = dinoST2.executeQuery(dinoSQL);
             List<Book> books = new LinkedList<>();
-            while (rs2.next()) {
-                Book book = new Book(rs2.getInt("ISBN"),
-                        rs2.getString("title"),
-                        rs2.getString("author"),
-                        rs2.getString("category"));
+            while (dinoRS2.next()) {
+                Book book = new Book(dinoRS2.getInt("ISBN"),
+                        dinoRS2.getString("title"),
+                        dinoRS2.getString("author"),
+                        dinoRS2.getString("category"));
 
                 books.add(book);
             }
 
             return books;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (SQLException dinoThrow) {
+            dinoThrow.printStackTrace();
+        } catch (ClassNotFoundException dinoE) {
+            dinoE.printStackTrace();
         } finally {
             try {
-                con2.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                dinoCon2.close();
+            } catch (SQLException dinoThrow) {
+                dinoThrow.printStackTrace();
             }
         }
         return null;
     }
+    //using exception handling to get book by isbn of the book
     @Override
     public Book getBook(int ISBN) {
-        Connection con2 = null;
+        Connection dinoCon2 = null;
         try {
-            con2 = db2.getConnection();
-            String sql = "SELECT ISBN,title,author,category FROM Book WHERE ISBN=?";
-            PreparedStatement st2 = con2.prepareStatement(sql);
+            dinoCon2 = dinoDB2.getConnection();
+            String dinoSQL = "SELECT ISBN,title,author,category FROM Book WHERE ISBN=?";
+            PreparedStatement dinoST2 = dinoCon2.prepareStatement(dinoSQL);
 
-            st2.setInt(1, ISBN);
+            dinoST2.setInt(1, ISBN);
 
-            ResultSet rs2 = st2.executeQuery();
-            if (rs2.next()) {
-                Book book = new Book(rs2.getInt("ISBN"),
-                        rs2.getString("title"),
-                        rs2.getString("author"),
-                        rs2.getString("category"));
+            ResultSet dinoRS2 = dinoST2.executeQuery();
+            if (dinoRS2.next()) {
+                Book book = new Book(dinoRS2.getInt("ISBN"),
+                        dinoRS2.getString("title"),
+                        dinoRS2.getString("author"),
+                        dinoRS2.getString("category"));
 
                 return book;
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (SQLException dinoThrow) {
+            dinoThrow.printStackTrace();
+        } catch (ClassNotFoundException dinoE) {
+            dinoE.printStackTrace();
         } finally {
             try {
-                con2.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                dinoCon2.close();
+            } catch (SQLException dinoThrow) {
+                dinnoThrow.printStackTrace();
             }
         }
         return null;
     }
-
+//using exception handling to add book to the database
     @Override
     public boolean addBook(Book book) {
-        Connection con2 = null;
+        Connection dinoCon2 = null;
         try {
-            con2 = db2.getConnection();
-            String sql = "INSERT INTO Users(ISBN,title,author,category) VALUES (?,?,?,?)";
-            PreparedStatement st2 = con2.prepareStatement(sql);
+            dinoCon2 = dinoDB2.getConnection();
+            //using prepared statement because we several parameters in sql statement
+            String dinioSQL = "INSERT INTO Users(ISBN,title,author,category) VALUES (?,?,?,?)";
+            PreparedStatement dinoST2 = dinoCon2.prepareStatement(dinoSQL);
+//to bind every qustion mark we use these setInt,....
+            dinoST2.setInt(1,book.getISBN());
+            dinoST2.setString(2, book.getTitle());
+            dinoST2.setString(3, book.getAuthor());
+            dinoST2.setString(4, book.getCategory());
 
-            st2.setInt(1,book.getISBN());
-            st2.setString(2, book.getTitle());
-            st2.setString(3, book.getAuthor());
-            st2.setString(4, book.getCategory());
-
-            st2.execute();
+            dinoST2.execute();
             return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
+        } catch (SQLException dinoThrow) {
+            dinoThrow.printStackTrace();
+        } catch (ClassNotFoundException dinoE) {
+            dinoE.printStackTrace();
+        } finally {//close the connection
             try {
-                con2.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+                dinoCon2.close();
+            } catch (SQLException dinoThrow) {
+                dinoThrow.printStackTrace();
             }
         }
         return false;
